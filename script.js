@@ -1,10 +1,66 @@
-const express =require('express')
-const app=express()
+const express = require('express')
+const app = express()
+const mongoose=require('mongoose')
+const empModel=require('./models/employeemodel')
+
+app.use(express.json())
 
 //route
-app.get('/blog',(req,res)=>{
-    res.send("Node app running in 3000 port, node app is changed")
+app.get('/', (req, res) => {
+    res.send("Node app running in 3000 port")
 
 })
 
-app.listen(3000)
+app.get('/news', (req, res) => {
+    res.send("hello world")
+
+})
+
+app.post('/employee',async (req,res)=>{
+    try {
+    const employee= await empModel.create(req.body)
+    res.status(200).json(employee)
+        
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).json({message:error.message})
+    }
+    
+   
+})
+
+app.get('/employees',async (req,res)=>{
+    try {
+    const employees= await empModel.find({})
+    res.status(200).json(employees)
+        
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).json({message:error.message})
+    }
+    
+   
+})
+
+app.get('/employee/:id',async (req,res)=>{
+    try {
+    const {id}= req.params
+    const employee= await empModel.findById(id)
+    res.status(200).json(employee)
+        
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).json({message:error.message})
+    }
+    
+   
+})
+
+
+mongoose.connect('mongodb+srv://admin:musquare123@nodeapp.usye39c.mongodb.net/?retryWrites=true&w=majority')
+  .then(() => 
+  {console.log('Connected to Database')}
+  )
+  .catch((error)=>console.log(error))
+
+  app.listen(3000)
