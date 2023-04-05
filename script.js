@@ -16,6 +16,7 @@ app.get('/news', (req, res) => {
 
 })
 
+//create an entry
 app.post('/employee',async (req,res)=>{
     try {
     const employee= await empModel.create(req.body)
@@ -29,6 +30,7 @@ app.post('/employee',async (req,res)=>{
    
 })
 
+//fetch all the employees data
 app.get('/employees',async (req,res)=>{
     try {
     const employees= await empModel.find({})
@@ -42,6 +44,7 @@ app.get('/employees',async (req,res)=>{
    
 })
 
+// fetch employee data by ID
 app.get('/employee/:id',async (req,res)=>{
     try {
     const {id}= req.params
@@ -56,6 +59,40 @@ app.get('/employee/:id',async (req,res)=>{
    
 })
 
+//update or edit employee details
+
+app.put('/employee/:id',async(req,res)=>{
+    try {
+        const {id}=req.params
+        const employee= await empModel.findByIdAndUpdate(id,req.body)
+        if(!employee){
+            res.status(404).json({message:'employee not found'})
+       }
+       const updatedEmp= await empModel.findByIdAndUpdate(id,req.body)
+
+       res.status(200).json(updatedEmp);
+        
+    } catch (error) {
+        res.status(500).json({message:error.message})
+    }
+})
+
+//delete employeedetails
+
+app.delete('/employee/:id', async(req,res)=>{
+    try {
+        const {id}=req.params
+        const employee= await empModel.findByIdAndDelete(id);
+        if(!employee){
+            res.status(404).json({message:'employee not found'})
+       }
+       res.status(200).json({message: 'successfully Deleted'})
+    } catch (error) {
+        res.status(500).json({message:error.message})
+    }
+})
+
+
 
 mongoose.connect('mongodb+srv://admin:musquare123@nodeapp.usye39c.mongodb.net/?retryWrites=true&w=majority')
   .then(() => 
@@ -63,4 +100,4 @@ mongoose.connect('mongodb+srv://admin:musquare123@nodeapp.usye39c.mongodb.net/?r
   )
   .catch((error)=>console.log(error))
 
-  app.listen(3000)
+  app.listen(8080)
